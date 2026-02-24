@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { createBoard, deleteBoard, subscribeToBoards } from "../services/boardService";
+import {
+  createBoard,
+  deleteBoard,
+  subscribeToBoards,
+} from "../services/boardService";
 import { useNavigate } from "react-router-dom";
 
 export default function Boards() {
@@ -10,8 +14,6 @@ export default function Boards() {
   const [title, setTitle] = useState("");
 
   useEffect(() => {
-
-
     if (!user) return;
 
     const unsubscribe = subscribeToBoards(user.uid, setBoards);
@@ -26,12 +28,12 @@ export default function Boards() {
   };
 
   return (
-    <div className="min-h-screen bg-cyan-200 text-white p-6">
+    <div className="min-h-screen w-full bg-cyan-200 text-white px-4 md:px-6 overflow-x-hidden">
       <div className="flex justify-between mb-6">
         <h1 className="text-6xl font-bold text-black italic">Your Boards</h1>
 
         <div className="bg-gray-800 p-4 rounded-lg mb-6 flex justify-between items-center">
-          <div>
+          <div className="hidden sm:block">
             <h2 className="text-lg font-semibold text-white">
               {user?.displayName || "User"}
             </h2>
@@ -40,7 +42,17 @@ export default function Boards() {
 
           <button
             onClick={logout}
-            className="bg-red-500 px-4 py-2 rounded text-white cursor-pointer ml-4">
+            className="
+                  bg-red-500 
+                  px-2 py-1 text-sm
+                  sm:px-3 sm:py-1.5 sm:text-base
+                  md:px-4 md:py-2 md:text-base
+                  rounded 
+                  text-white 
+                  cursor-pointer 
+                  ml-2 sm:ml-4
+                  whitespace-nowrap
+                  ">
             Logout
           </button>
         </div>
@@ -70,9 +82,10 @@ export default function Boards() {
             <div className="flex justify-between">
               <h2 className="text-xl font-semibold">{board.title}</h2>
               <button
-                onClick={(e) => { 
+                onClick={(e) => {
                   e.stopPropagation();
-                  deleteBoard(board.id)}}
+                  deleteBoard(board.id);
+                }}
                 className="text-red-400 cursor-pointer">
                 X
               </button>
