@@ -29,7 +29,7 @@ export default function Boards() {
 
   return (
     <div className="min-h-screen w-full bg-cyan-200 text-white px-4 md:px-6 overflow-x-hidden">
-      <div className="flex justify-between mb-6">
+      <div className="flex justify-between mb-6 mt-4">
         <h1 className="text-6xl font-bold text-black italic">Your Boards</h1>
 
         <div className="bg-gray-800 p-4 rounded-lg mb-6 flex justify-between items-center">
