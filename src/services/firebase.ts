@@ -3,14 +3,13 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBlKvuA5Ymz0uvgumdqKGB-05feuIbcCcw",
-  authDomain: "trello-clone-cc86e.firebaseapp.com",
-  projectId: "trello-clone-cc86e",
-  storageBucket: "trello-clone-cc86e.firebasestorage.app",
-  messagingSenderId: "240814106483",
-  appId: "1:240814106483:web:080ae139116809bef60706"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
-
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
