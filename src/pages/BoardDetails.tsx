@@ -34,23 +34,19 @@ export default function BoardDetails() {
   const [activeCard, setActiveCard] = useState<any>(null);
   const { user } = useAuth();
 
-  /* ---------------- MOBILE + DESKTOP DRAG SENSORS ---------------- */
-
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8, // Prevent accidental drag while clicking
+        distance: 8,
       },
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 150, // Long press to drag (mobile UX standard)
+        delay: 150,
         tolerance: 5,
       },
-    })
+    }),
   );
-
-  /* ---------------- FETCH BOARD TITLE ---------------- */
 
   useEffect(() => {
     const fetchBoard = async () => {
@@ -67,16 +63,12 @@ export default function BoardDetails() {
     fetchBoard();
   }, [id]);
 
-  /* ---------------- SUBSCRIBE TO LISTS ---------------- */
-
   useEffect(() => {
     if (!id || !user) return;
 
     const unsubscribe = subscribeToLists(id, user.uid, setLists);
     return () => unsubscribe();
   }, [id, user]);
-
-  /* ---------------- SUBSCRIBE TO CARDS ---------------- */
 
   useEffect(() => {
     if (!id || !user) return;
@@ -85,7 +77,7 @@ export default function BoardDetails() {
       collection(db, "cards"),
       where("boardId", "==", id),
       where("userId", "==", user.uid),
-      orderBy("order")
+      orderBy("order"),
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -99,14 +91,10 @@ export default function BoardDetails() {
     return () => unsubscribe();
   }, [id, user]);
 
-  /* ---------------- ADD CARD ---------------- */
-
   const handleAddCard = async (title: string, listId: string) => {
     if (!id || !user) return;
     await createCard(title, listId, id, user.uid);
   };
-
-  /* ---------------- CREATE LIST ---------------- */
 
   const handleCreateList = async () => {
     if (!title.trim() || !id || !user) return;
@@ -114,8 +102,6 @@ export default function BoardDetails() {
     await createList(title, id, user.uid);
     setTitle("");
   };
-
-  /* ---------------- DRAG END LOGIC ---------------- */
 
   const handleDragEnd = async (event: any) => {
     const { active, over } = event;
@@ -131,7 +117,6 @@ export default function BoardDetails() {
     if (overCard) {
       newListId = overCard.listId;
     } else {
-      // Dropped on empty list
       newListId = over.id;
     }
 
@@ -140,7 +125,6 @@ export default function BoardDetails() {
 
     const updatedCards = [...cards];
 
-    // Remove from old position
     updatedCards.splice(oldIndex, 1);
 
     const movedCard = {
@@ -148,32 +132,27 @@ export default function BoardDetails() {
       listId: newListId,
     };
 
-    // Insert at new position
     if (newIndex >= 0) {
       updatedCards.splice(newIndex, 0, movedCard);
     } else {
       updatedCards.push(movedCard);
     }
 
-    // Optimistic UI update
     setCards(updatedCards);
 
-    // Sync to Firestore
     try {
       await Promise.all(
         updatedCards.map((card, index) =>
           updateDoc(doc(db, "cards", card.id), {
             order: index,
             listId: card.listId,
-          })
-        )
+          }),
+        ),
       );
     } catch (err) {
       console.error("Error updating order:", err);
     }
   };
-
-  /* ---------------- UPDATE BOARD TITLE ---------------- */
 
   const handleBoardUpdate = async () => {
     if (!boardTitle.trim() || !id) return;
@@ -182,11 +161,8 @@ export default function BoardDetails() {
     setIsEditingBoard(false);
   };
 
-  /* ---------------- RENDER ---------------- */
-
   return (
     <div className="min-h-screen bg-[#355872] text-[#F7F8F0] p-6">
-      {/* Board Title */}
       {isEditingBoard ? (
         <input
           value={boardTitle}
@@ -199,13 +175,11 @@ export default function BoardDetails() {
       ) : (
         <h1
           className="text-3xl font-bold mb-6 cursor-pointer"
-          onDoubleClick={() => setIsEditingBoard(true)}
-        >
+          onDoubleClick={() => setIsEditingBoard(true)}>
           {boardTitle}
         </h1>
       )}
 
-      {/* Add List */}
       <div className="flex gap-4 mb-6">
         <input
           type="text"
@@ -216,13 +190,11 @@ export default function BoardDetails() {
         />
         <button
           onClick={handleCreateList}
-          className="bg-blue-500 px-4 py-2 rounded cursor-pointer"
-        >
+          className="bg-blue-500 px-4 py-2 rounded cursor-pointer">
           Add List
         </button>
       </div>
 
-      {/* Drag Context */}
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -233,9 +205,8 @@ export default function BoardDetails() {
         onDragEnd={(event) => {
           handleDragEnd(event);
           setActiveCard(null);
-        }}
-      >
-        <div className="flex gap-4 overflow-x-auto touch-pan-x">
+        }}>
+        <div className="flex items-start gap-4 overflow-x-auto touch-pan-x">
           {lists.map((list) => (
             <ListColumn
               key={list.id}

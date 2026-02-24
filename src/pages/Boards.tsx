@@ -32,7 +32,7 @@ export default function Boards() {
       <div className="flex justify-between mb-6 mt-4">
         <h1 className="text-6xl font-bold text-black italic">Your Boards</h1>
 
-        <div className="bg-gray-800 p-4 rounded-lg mb-6 flex justify-between items-center">
+        <div className="bg-transparent sm:bg-gray-800 p-4 rounded-lg mb-6 flex justify-between items-center">
           <div className="hidden sm:block">
             <h2 className="text-lg font-semibold text-white">
               {user?.displayName || "User"}
